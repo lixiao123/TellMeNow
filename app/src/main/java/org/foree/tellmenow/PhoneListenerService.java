@@ -94,6 +94,7 @@ public class PhoneListenerService extends Service {
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
+            timer = new Timer();
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
                     Log.v(TAG, "idle");
@@ -103,7 +104,6 @@ public class PhoneListenerService extends Service {
                     timer.cancel();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                    timer = new Timer();
                     Log.v(TAG, "ringing: " + incomingNumber);
                     //get contact name by incomingNumber
                     phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
