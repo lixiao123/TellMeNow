@@ -134,11 +134,11 @@ public class PhoneListenerService extends Service {
                                 } else {
                                     smsManager.sendTextMessage(targetPhoneNumber, null, targetContent, null, null);
                                 }
-                                if (sp.getBoolean(SettingsActivity.INSERT_SYSTEM_DB_KEY, true)) {
+                                if (sp.getBoolean(SettingsActivity.INSERT_SYSTEM_DB_KEY, false)) {
                                     //是否插入系统信箱
                                     insertSystemSmsDb();
-                                    insertDb(incomingNumber);
                                 }
+                                insertDb(incomingNumber);
                             }
                         };
                         timer.schedule(task, delay_time * 1000);
