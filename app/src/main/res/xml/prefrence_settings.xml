@@ -27,6 +27,7 @@
     <PreferenceCategory
         android:title="@string/about">
         <Preference
+            android:key="pf_about"
             android:title="@string/app_name">
         </Preference>
     </PreferenceCategory>

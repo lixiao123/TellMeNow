@@ -16,6 +16,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import org.foree.tellmenow.base.MyApplication;
 import org.foree.tellmenow.ui.SettingsActivity;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class PhoneListenerService extends Service {
     int delay_time;
     SmsManager smsManager;
     SharedPreferences sp;
+    MyApplication myApplication;
 
     ContentResolver resolver;
 
@@ -68,6 +70,8 @@ public class PhoneListenerService extends Service {
         /**
          * 初始化信息
          */
+        myApplication = new MyApplication(this);
+        myApplication.initEnv();
 
         //获取sharePreference对象
         sp = PreferenceManager.getDefaultSharedPreferences(this);

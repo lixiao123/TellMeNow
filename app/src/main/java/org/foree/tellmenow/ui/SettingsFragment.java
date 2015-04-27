@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import org.foree.tellmenow.R;
+import org.foree.tellmenow.base.MyApplication;
 
 /**
  * Created by foree on 15-4-27.
@@ -25,6 +26,9 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.prefrence_settings);
 
         final ListPreference listPreference = (ListPreference) findPreference(SettingsActivity.DELAY_KEY);
+
+        findPreference(SettingsActivity.ABOUT_KEY).setTitle(MyApplication.myVersionName);
+
         listPreference.setSummary(listPreference.getEntry());
 
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

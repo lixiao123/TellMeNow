@@ -13,6 +13,7 @@ public class SettingsActivity extends ActionBarActivity{
 
     //preference Key
     public static final String DELAY_KEY = "lp_delay";
+    public static final String ABOUT_KEY = "pf_about";
     public static final String TARGET_NUMBER_KEY = "ep_targetNumber";
     public static final String INSERT_SYSTEM_DB_KEY = "cb_insert_system_db";
 
