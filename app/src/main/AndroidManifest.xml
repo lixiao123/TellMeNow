@@ -22,8 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.SettingsActivity"/>
-        <service android:name=".PhoneListenerService">
-        </service>
+        <service android:name=".PhoneListenerService"/>
         <receiver android:name=".BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
