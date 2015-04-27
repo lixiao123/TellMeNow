@@ -3,6 +3,7 @@
 
     <string name="app_name">TellMeNow</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
+    <string name="phone_Number_Name">陌生人</string>
 
 </resources>

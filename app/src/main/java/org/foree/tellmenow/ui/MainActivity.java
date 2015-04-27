@@ -1,4 +1,4 @@
-package org.foree.tellmenow;
+package org.foree.tellmenow.ui;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.foree.tellmenow.PhoneListenerService;
+import org.foree.tellmenow.R;
 
 /**
  * 1.来电话15秒未接听发送短信
@@ -24,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //如果开机自启动被屏蔽，则打开app启动service
+        //如果开机自启动被屏蔽，则打开app时启动service
         Intent phoneService = new Intent(this, PhoneListenerService.class);
         startService(phoneService);
 
