@@ -3,8 +3,10 @@ package org.foree.tellmenow;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
+
+import org.foree.tellmenow.ui.SettingsActivity;
 
 /**
  * Created by foree on 15-4-27.
@@ -16,12 +18,14 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(action_boot)) {
-            Intent phoneService = new Intent(context, PhoneListenerService.class);
-            context.startService(phoneService);
-            Log.v(TAG, "start service");
-            //Toast.makeText(context, "start service", Toast.LENGTH_LONG).show();
-        }
-
+        //如果系统监控功能开启，默认开机自启动
+       if( PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivity.SWITCH_KEY, true)) {
+           if (intent.getAction().equals(action_boot)) {
+               Intent phoneService = new Intent(context, PhoneListenerService.class);
+               context.startService(phoneService);
+               Log.v(TAG, "start service");
+               //Toast.makeText(context, "start service", Toast.LENGTH_LONG).show();
+           }
+       }
     }
 }
