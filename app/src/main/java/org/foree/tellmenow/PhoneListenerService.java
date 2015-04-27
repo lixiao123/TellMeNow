@@ -16,7 +16,6 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import org.foree.tellmenow.base.MyApplication;
 import org.foree.tellmenow.ui.SettingsActivity;
 
 import java.util.List;
@@ -31,7 +30,6 @@ public class PhoneListenerService extends Service {
     private static final String TAG = "PhoneListenerService";
     SmsManager smsManager;
     SharedPreferences sp;
-    MyApplication myApplication;
     ContentResolver resolver;
 
     //需要查询的phone表字段
@@ -39,7 +37,6 @@ public class PhoneListenerService extends Service {
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER,
     };
-    Cursor phoneCursor;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,11 +56,6 @@ public class PhoneListenerService extends Service {
 
         //get smsManger
         smsManager = SmsManager.getDefault();
-        /**
-         * 初始化信息
-         */
-        myApplication = new MyApplication(this);
-        myApplication.initEnv();
 
         //获取sharePreference对象
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -86,6 +78,7 @@ public class PhoneListenerService extends Service {
         String targetContent;
         String targetPhoneNumber;
         int delay_time;
+        Cursor phoneCursor;
         Timer timer;
         TimerTask task;
 

@@ -1,6 +1,7 @@
 package org.foree.tellmenow.ui;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 
 import org.foree.tellmenow.PhoneListenerService;
 import org.foree.tellmenow.R;
+import org.foree.tellmenow.base.MyApplication;
 import org.xml.sax.InputSource;
 
 /**
@@ -23,14 +25,26 @@ import org.xml.sax.InputSource;
  */
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
+    MyApplication myApplication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //如果开机自启动被屏蔽，则打开app时启动service
-        Intent phoneService = new Intent(this, PhoneListenerService.class);
-        startService(phoneService);
+        /**
+         * 如果开机自启动被屏蔽，则打开app时启动service
+         * 并且如果关闭监控功能，则不启动服务
+         */
+        if( PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.SWITCH_KEY, true)) {
+            Intent phoneService = new Intent(this, PhoneListenerService.class);
+            startService(phoneService);
+        }
+
+        /**
+         * 初始化应用程序信息
+         */
+        myApplication = new MyApplication(this);
+        myApplication.initEnv();
 
         Log.v(TAG, "onCreate");
     }

@@ -7,6 +7,8 @@
     <string name="phone_Number_Name">NoBody</string>
     <string name="general">General</string>
     <string name="st_function">监听功能</string>
+    <string name="function_on_notify">开启漏接监听</string>
+    <string name="function_off_notify">关闭漏接监听</string>
     <string name="ep_targetNumber">发送的号码</string>
     <string name="targetNumber_default">13676090644</string>
     <string name="lp_delay">延迟的时间</string>
