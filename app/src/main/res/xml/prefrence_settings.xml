@@ -11,6 +11,11 @@
             android:key="ep_targetNumber"
             android:dependency="st_function"
             android:title="@string/ep_targetNumber"/>
+        <EditTextPreference
+            android:defaultValue="@string/user_define_notify_default"
+            android:key="ep_define_notify"
+            android:dependency="st_function"
+            android:title="@string/user_define_notify"/>
         <ListPreference
             android:key="lp_delay"
             android:summary="@string/delay_default"

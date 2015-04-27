@@ -11,6 +11,8 @@
     <string name="function_off_notify">关闭漏接监听</string>
     <string name="ep_targetNumber">发送的号码</string>
     <string name="targetNumber_default">13676090644</string>
+    <string name="user_define_notify">自定义短信小尾巴</string>
+    <string name="user_define_notify_default">Another_two 来电话啦！！再不接听就剁手！</string>
     <string name="lp_delay">延迟的时间</string>
     <string name="delay_default">10s</string>
     <string name="dialog_delay">请选择要延迟的时间</string>

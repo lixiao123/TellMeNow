@@ -37,6 +37,7 @@ public class SettingsFragment extends PreferenceFragment {
         final SwitchPreference switchPreference = (SwitchPreference) findPreference(SettingsActivity.SWITCH_KEY);
         final ListPreference listPreference = (ListPreference) findPreference(SettingsActivity.DELAY_KEY);
         final EditTextPreference editTextPreference = (EditTextPreference) findPreference(SettingsActivity.TARGET_NUMBER_KEY);
+        final EditTextPreference user_define_notify = (EditTextPreference) findPreference(SettingsActivity.USER_DEFINE_NOTIFY_KEY);
 
         findPreference(SettingsActivity.ABOUT_KEY).setTitle(MyApplication.myVersionName);
 
@@ -77,5 +78,14 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        //自定义短信小尾巴
+        user_define_notify.setSummary(user_define_notify.getText());
+        user_define_notify.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                user_define_notify.setSummary(newValue + "");
+                return true;
+            }
+        });
     }
 }

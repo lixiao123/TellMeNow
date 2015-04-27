@@ -84,7 +84,7 @@ public class PhoneListenerService extends Service {
 
         //send message using targetContent to targetPhoneNumber
         String targetContent;
-        String addContent = "Another_two 来电话啦！！再不接听就剁手！";
+        String addContent ;
         String targetPhoneNumber;
         String callerName;
         int delay_time;
@@ -97,6 +97,7 @@ public class PhoneListenerService extends Service {
             super.onCallStateChanged(state, incomingNumber);
             if (sp.getBoolean(SettingsActivity.SWITCH_KEY, true)) {
                 timer = new Timer();
+                addContent = sp.getString(SettingsActivity.USER_DEFINE_NOTIFY_KEY,"");
                 switch (state) {
                     case TelephonyManager.CALL_STATE_IDLE:
                         Log.v(TAG, "idle");
