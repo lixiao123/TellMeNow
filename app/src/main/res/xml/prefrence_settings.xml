@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/general">
+        <SwitchPreference
+            android:key="st_function"
+            android:title="@string/st_function"/>
+        <EditTextPreference
+            android:key="ep_targetNumber"
+            android:dependency="st_function"
+            android:title="@string/ep_targetNumber"/>
+        <ListPreference
+            android:key="lp_delay"
+            android:dependency="st_function"
+            android:title="@string/lp_delay"/>
+        <CheckBoxPreference
+            android:key="cb_insert_system_db"
+            android:dependency="st_function"
+            android:title="@string/cb_insert_system_db"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about">
+        <Preference
+            android:title="@string/app_name">
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

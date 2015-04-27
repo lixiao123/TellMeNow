@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import org.foree.tellmenow.PhoneListenerService;
 import org.foree.tellmenow.R;
+import org.xml.sax.InputSource;
 
 /**
  * 1.来电话15秒未接听发送短信
@@ -51,6 +52,8 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent open_settings = new Intent(this, SettingsActivity.class);
+            startActivity(open_settings);
             return true;
         }
 
