@@ -1,41 +1,32 @@
 package org.foree.tellmenow;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.provider.ContactsContract;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+/**
+ * 1.来电话15秒未接听发送短信
+ * 2.15之前接听取消发送短信
+ * 3.可以选择监听时间 5-20s
+ * 4.读取通讯录来查看什么人打来的电话
+ * 5.实现归属地显示（本地数据库）
+ * 6.可以设置要传送的号码
+ * 7.显示已经发送的漏接电话的短信数目
+ * 8.开机自启动
+ */
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
-    //需要查询的phone表字段
-    private static final String[] PHONE_PROJECTION = new String[]{
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-    };
-    Cursor phoneCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //get Phone Service
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        telephonyManager.listen(new MyPhoneStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
-
-        //get contacts info
-        ContentResolver resolver = getContentResolver();
-        phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                PHONE_PROJECTION, null, null, null);
-
+        Intent phoneService = new Intent(this, PhoneListenerService.class);
+        startService(phoneService);
 
         Log.v(TAG, "onCreate");
     }
@@ -61,34 +52,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private class MyPhoneStateListener extends PhoneStateListener{
-        private static final String TAG = "MyPhoneStateListener";
-        private static final int PHONE_CONTACT_NAME_INDEX = 0;
-        private static final int PHONE_CONTACT_NUMBER_INDEX = 1;
-
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            super.onCallStateChanged(state, incomingNumber);
-            switch (state){
-                case TelephonyManager.CALL_STATE_IDLE:
-                    Log.v(TAG, "idle");
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    Log.v(TAG, "offHook: " + incomingNumber);
-                    break;
-                case TelephonyManager.CALL_STATE_RINGING:
-                    Log.v(TAG, "ringing: " + incomingNumber);
-                    //get contact name by incomingNumber
-                    if( phoneCursor != null){
-                        while(phoneCursor.moveToNext()){
-                            if(phoneCursor.getString(PHONE_CONTACT_NUMBER_INDEX).equals(incomingNumber)){
-                                Log.v(TAG, "call from " + phoneCursor.getString(PHONE_CONTACT_NAME_INDEX));
-                            }
-                        }
-                    }
-            }
-        }
     }
 }
