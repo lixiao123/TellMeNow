@@ -11,12 +11,17 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by foree on 15-4-27.
  * get phone state
  */
 public class PhoneListenerService extends Service{
     private static final String TAG = "PhoneListenerService";
+    Timer timer;
+    TimerTask task;
 
     //需要查询的phone表字段
     private static final String[] PHONE_PROJECTION = new String[]{
@@ -44,8 +49,18 @@ public class PhoneListenerService extends Service{
                 PHONE_PROJECTION, null, null, null);
 
 
+        //get a timer
+        timer = new Timer();
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                //send a sms;
+                Log.v(TAG, "send message");
+            }
+        };
     }
 
+    //监听电话的状态
     private class MyPhoneStateListener extends PhoneStateListener{
         private static final String TAG = "MyPhoneStateListener";
         private static final int PHONE_CONTACT_NAME_INDEX = 0;
@@ -60,6 +75,7 @@ public class PhoneListenerService extends Service{
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     Log.v(TAG, "offHook: " + incomingNumber);
+                    timer.cancel();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.v(TAG, "ringing: " + incomingNumber);
@@ -71,6 +87,8 @@ public class PhoneListenerService extends Service{
                             }
                         }
                     }
+                    //15秒之后未接听，发送短信
+                    timer.schedule(task, 15000);
             }
         }
     }
