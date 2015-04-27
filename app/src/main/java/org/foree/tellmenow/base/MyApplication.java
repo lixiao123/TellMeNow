@@ -9,7 +9,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
+
 import org.foree.tellmenow.R;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -27,6 +31,18 @@ public class MyApplication extends Application {
     private static final String TAG = "MyApplication";
     private Context mContext;
     public static boolean mFirstRun;
+
+    /**
+     * 数据库信息
+     */
+    //数据库名称
+    public static final String dbName = "tmn.db";
+    //存放漏接的联系人信息表
+    public static final String userTable = "tmn";
+    //应用程序的数据库版本
+    public static int myDataBaseVersion = 1;
+    //数据库的存放路径
+    public static String myDataBasePath;
 
     /**
      * 应用程序信息
@@ -60,7 +76,10 @@ public class MyApplication extends Application {
         myApplicationPackageName = mContext.getPackageName();
         //初始化当前日期
         myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(new Date());
-        // Log.v(TAG, myDate);
+        Log.v(TAG, myDate);
+
+        //初始化数据库文件所在的路径
+        myDataBasePath = mContext.getFilesDir().getPath() + "/.." + File.separator + "databases";
 
         //获取当前应用程序的版本号和版本名称
         initApplicationVersionInfo(mContext);

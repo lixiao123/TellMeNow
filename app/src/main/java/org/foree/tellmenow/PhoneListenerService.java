@@ -16,9 +16,13 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import org.foree.tellmenow.db.MyDao;
 import org.foree.tellmenow.ui.SettingsActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +35,7 @@ public class PhoneListenerService extends Service {
     SmsManager smsManager;
     SharedPreferences sp;
     ContentResolver resolver;
+    MyDao myDao;
 
     //需要查询的phone表字段
     private static final String[] PHONE_PROJECTION = new String[]{
@@ -57,6 +62,9 @@ public class PhoneListenerService extends Service {
         //get smsManger
         smsManager = SmsManager.getDefault();
 
+        //get MyDao
+        myDao = new MyDao(this);
+
         //获取sharePreference对象
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         //初始化switch开关
@@ -76,14 +84,16 @@ public class PhoneListenerService extends Service {
 
         //send message using targetContent to targetPhoneNumber
         String targetContent;
+        String addContent = "Another_two 来电话啦！！再不接听就剁手！";
         String targetPhoneNumber;
+        String callerName;
         int delay_time;
         Cursor phoneCursor;
         Timer timer;
         TimerTask task;
 
         @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
+        public void onCallStateChanged(int state, final String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
             if (sp.getBoolean(SettingsActivity.SWITCH_KEY, true)) {
                 timer = new Timer();
@@ -98,8 +108,11 @@ public class PhoneListenerService extends Service {
                     case TelephonyManager.CALL_STATE_RINGING:
                         Log.v(TAG, "ringing: " + incomingNumber);
 
-                        //获取来电人的联系人相关信息
-                        targetContent = getCallerInfo(incomingNumber);
+                        //获取来电人的联系人信息
+                        callerName = getCallerInfo(incomingNumber);
+                        targetContent = addContent + "\n"
+                                + "来电人: " + callerName + "\n"
+                                + "来电号码: " + incomingNumber;
 
                         //接收监听信息的电话号码
                         targetPhoneNumber = sp.getString(SettingsActivity.TARGET_NUMBER_KEY, getResources().getString(R.string.targetNumber_default));
@@ -123,6 +136,7 @@ public class PhoneListenerService extends Service {
                                 if (sp.getBoolean(SettingsActivity.INSERT_SYSTEM_DB_KEY, true)) {
                                     //是否插入系统信箱
                                     insertSystemSmsDb();
+                                    insertDb(incomingNumber);
                                 }
                             }
                         };
@@ -136,7 +150,7 @@ public class PhoneListenerService extends Service {
          */
         private String getCallerInfo(String incomingNumber) {
             //contact info from system contacts
-            String addContent = "Another_two 来电话啦！！再不接听就剁手！";
+
             String phoneContactName = getResources().getString(R.string.phone_Number_Name);
 
             //get contact name by incomingNumber
@@ -155,13 +169,11 @@ public class PhoneListenerService extends Service {
                 }
 
             }
-            return addContent + "\n"
-                    + "来电人: " + phoneContactName + "\n"
-                    + "来电号码: " + incomingNumber;
+            return phoneContactName;
         }
 
         /**
-         * 将发送的短信插入数据库
+         * 将发送的短信插入系统信箱
          */
         private void insertSystemSmsDb() {
             ContentValues values = new ContentValues();
@@ -178,6 +190,14 @@ public class PhoneListenerService extends Service {
             //插入短信库
             getContentResolver().insert(Uri.parse("content://sms"), values);
             Log.v(TAG, "send message");
+        }
+
+        /**
+         * 将记录插入到数据库
+         */
+        private void insertDb(String number){
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(new Date());
+            myDao.add(callerName, number, currentDate);
         }
     }
 }
