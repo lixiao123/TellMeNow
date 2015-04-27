@@ -1,7 +1,11 @@
 package org.foree.tellmenow;
 
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,6 +16,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //get Phone Service
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(new MyPhoneStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
     }
 
 
@@ -35,5 +43,24 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class MyPhoneStateListener extends PhoneStateListener{
+        private static final String TAG = "MyPhoneStateListener";
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            switch (state){
+                case TelephonyManager.CALL_STATE_IDLE:
+                    Log.v(TAG, "idle");
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    Log.v(TAG, "offHook: " + incomingNumber);
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING:
+                    Log.v(TAG, "ringing: " + incomingNumber);
+            }
+        }
     }
 }
