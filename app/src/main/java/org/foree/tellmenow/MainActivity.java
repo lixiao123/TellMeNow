@@ -1,6 +1,9 @@
 package org.foree.tellmenow;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
@@ -11,6 +14,13 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
+    private static final String TAG = "MainActivity";
+    //需要查询的phone表字段
+    private static final String[] PHONE_PROJECTION = new String[]{
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+    };
+    Cursor phoneCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +30,14 @@ public class MainActivity extends ActionBarActivity {
         //get Phone Service
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(new MyPhoneStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
+
+        //get contacts info
+        ContentResolver resolver = getContentResolver();
+        phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                PHONE_PROJECTION, null, null, null);
+
+
+        Log.v(TAG, "onCreate");
     }
 
 
@@ -47,6 +65,8 @@ public class MainActivity extends ActionBarActivity {
 
     private class MyPhoneStateListener extends PhoneStateListener{
         private static final String TAG = "MyPhoneStateListener";
+        private static final int PHONE_CONTACT_NAME_INDEX = 0;
+        private static final int PHONE_CONTACT_NUMBER_INDEX = 1;
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
@@ -60,6 +80,14 @@ public class MainActivity extends ActionBarActivity {
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.v(TAG, "ringing: " + incomingNumber);
+                    //get contact name by incomingNumber
+                    if( phoneCursor != null){
+                        while(phoneCursor.moveToNext()){
+                            if(phoneCursor.getString(PHONE_CONTACT_NUMBER_INDEX).equals(incomingNumber)){
+                                Log.v(TAG, "call from " + phoneCursor.getString(PHONE_CONTACT_NAME_INDEX));
+                            }
+                        }
+                    }
             }
         }
     }
