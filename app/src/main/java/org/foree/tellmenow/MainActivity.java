@@ -15,7 +15,7 @@ import android.view.MenuItem;
  * 5.实现归属地显示（本地数据库）
  * 6.可以设置要传送的号码
  * 7.显示已经发送的漏接电话的短信数目
- * 8.开机自启动
+ * 8.开机自启动(每隔300秒检测service是否存在)
  */
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
@@ -24,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //如果开机自启动被屏蔽，则打开app启动service
         Intent phoneService = new Intent(this, PhoneListenerService.class);
         startService(phoneService);
 
