@@ -7,11 +7,13 @@
             android:key="st_function"
             android:title="@string/st_function"/>
         <EditTextPreference
+            android:defaultValue="@string/targetNumber_default"
             android:key="ep_targetNumber"
             android:dependency="st_function"
             android:title="@string/ep_targetNumber"/>
         <ListPreference
             android:key="lp_delay"
+            android:summary="@string/delay_default"
             android:entries="@array/entry_list"
             android:entryValues="@array/value_list"
             android:dependency="st_function"

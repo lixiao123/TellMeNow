@@ -12,6 +12,7 @@ import org.foree.tellmenow.R;
 public class SettingsActivity extends ActionBarActivity{
 
     //preference Key
+    public static final String SWITCH_KEY = "st_function";
     public static final String DELAY_KEY = "lp_delay";
     public static final String ABOUT_KEY = "pf_about";
     public static final String TARGET_NUMBER_KEY = "ep_targetNumber";

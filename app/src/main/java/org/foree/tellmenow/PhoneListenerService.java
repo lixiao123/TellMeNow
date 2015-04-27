@@ -75,9 +75,13 @@ public class PhoneListenerService extends Service {
 
         //获取sharePreference对象
         sp = PreferenceManager.getDefaultSharedPreferences(this);
+        //初始化switch开关
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(SettingsActivity.SWITCH_KEY, true);
+        editor.putString(SettingsActivity.DELAY_KEY, "10");
+        editor.apply();
 
         phoneContactName = getResources().getString(R.string.phone_Number_Name);
-        targetPhoneNumber = "13676090644";
         targetContent = phoneContactName + " " + phoneContactNumber;
 
 
