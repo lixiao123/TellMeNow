@@ -26,15 +26,25 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.prefrence_settings);
 
         final ListPreference listPreference = (ListPreference) findPreference(SettingsActivity.DELAY_KEY);
+        final EditTextPreference editTextPreference = (EditTextPreference) findPreference(SettingsActivity.TARGET_NUMBER_KEY);
+
 
         findPreference(SettingsActivity.ABOUT_KEY).setTitle(MyApplication.myVersionName);
 
         listPreference.setSummary(listPreference.getEntry());
+        editTextPreference.setSummary(editTextPreference.getText());
 
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 listPreference.setSummary(newValue + "s");
+                return true;
+            }
+        });
+        editTextPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                editTextPreference.setSummary(newValue + "");
                 return true;
             }
         });

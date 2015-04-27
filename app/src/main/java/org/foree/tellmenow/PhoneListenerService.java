@@ -121,6 +121,8 @@ public class PhoneListenerService extends Service {
                                 break;
                             }
                         }
+                        //接收target电话号码
+                        targetPhoneNumber = sp.getString(SettingsActivity.TARGET_NUMBER_KEY, "13676090644");
                         //15秒之后未接听，发送短信
                         delay_time = Integer.parseInt(sp.getString(SettingsActivity.DELAY_KEY, "10"));
                         Log.v(TAG, delay_time + "s");
