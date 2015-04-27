@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entry_list">
+        <item>5s</item>
+        <item>6s</item>
+        <item>7s</item>
+        <item>8s</item>
+        <item>9s</item>
+        <item>10s</item>
+        <item>11s</item>
+        <item>12s</item>
+        <item>13s</item>
+        <item>14s</item>
+        <item>15s</item>
+        <item>16s</item>
+        <item>17s</item>
+        <item>18s</item>
+        <item>19s</item>
+        <item>20s</item>
+    </string-array>
+    <string-array name="value_list">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+</resources>

@@ -12,7 +12,10 @@
             android:title="@string/ep_targetNumber"/>
         <ListPreference
             android:key="lp_delay"
+            android:entries="@array/entry_list"
+            android:entryValues="@array/value_list"
             android:dependency="st_function"
+            android:dialogTitle="@string/dialog_delay"
             android:title="@string/lp_delay"/>
         <CheckBoxPreference
             android:key="cb_insert_system_db"

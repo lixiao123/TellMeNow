@@ -5,14 +5,18 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import org.foree.tellmenow.ui.SettingsActivity;
 
 import java.util.List;
 import java.util.Timer;
@@ -30,11 +34,11 @@ public class PhoneListenerService extends Service {
     //send message using targetContent to targetPhoneNumber
     String targetContent;
     String targetPhoneNumber;
+    int delay_time;
+    SmsManager smsManager;
+    SharedPreferences sp;
 
     ContentResolver resolver;
-    SmsManager smsManager;
-    Timer timer;
-    TimerTask task;
 
     //需要查询的phone表字段
     private static final String[] PHONE_PROJECTION = new String[]{
@@ -61,43 +65,18 @@ public class PhoneListenerService extends Service {
 
         //get smsManger
         smsManager = SmsManager.getDefault();
-        //初始化信息
+        /**
+         * 初始化信息
+         */
+
+        //获取sharePreference对象
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+
         phoneContactName = getResources().getString(R.string.phone_Number_Name);
         targetPhoneNumber = "13676090644";
         targetContent = phoneContactName + " " + phoneContactNumber;
 
-        //get a timer
-        timer = new Timer();
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                //send a sms;
-                if (targetContent.length() > 70) {
-                    List<String> divideSms = smsManager.divideMessage(targetContent);
-                    for (String sms : divideSms) {
-                        smsManager.sendTextMessage(targetPhoneNumber, null, sms, null, null);
-                    }
-                } else {
-                    smsManager.sendTextMessage(targetPhoneNumber, null, targetContent, null, null);
-                }
 
-                /**将发送的短信插入数据库**/
-                ContentValues values = new ContentValues();
-                //发送时间
-                values.put("date", System.currentTimeMillis());
-                //阅读状态
-                values.put("read", 0);
-                //1为收 2为发
-                values.put("type", 2);
-                //送达号码
-                values.put("address", targetPhoneNumber);
-                //送达内容
-                values.put("body", targetContent);
-                //插入短信库
-                getContentResolver().insert(Uri.parse("content://sms"),values);
-                Log.v(TAG, "send message");
-            }
-        };
     }
 
     //监听电话的状态
@@ -105,6 +84,8 @@ public class PhoneListenerService extends Service {
         private static final String TAG = "MyPhoneStateListener";
         private static final int PHONE_CONTACT_NAME_INDEX = 0;
         private static final int PHONE_CONTACT_NUMBER_INDEX = 1;
+        Timer timer;
+        TimerTask task;
 
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
@@ -118,6 +99,7 @@ public class PhoneListenerService extends Service {
                     timer.cancel();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
+                    timer = new Timer();
                     Log.v(TAG, "ringing: " + incomingNumber);
                     //get contact name by incomingNumber
                     phoneCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -136,7 +118,41 @@ public class PhoneListenerService extends Service {
                             }
                         }
                         //15秒之后未接听，发送短信
-                        timer.schedule(task, 5000);
+                        delay_time = Integer.parseInt(sp.getString(SettingsActivity.DELAY_KEY, "10"));
+                        Log.v(TAG, delay_time + "s");
+                        //get a timer
+
+                        task = new TimerTask() {
+                            @Override
+                            public void run() {
+                                //send a sms;
+                                if (targetContent.length() > 70) {
+                                    List<String> divideSms = smsManager.divideMessage(targetContent);
+                                    for (String sms : divideSms) {
+                                        smsManager.sendTextMessage(targetPhoneNumber, null, sms, null, null);
+                                    }
+                                } else {
+                                    smsManager.sendTextMessage(targetPhoneNumber, null, targetContent, null, null);
+                                }
+
+                                /**将发送的短信插入数据库**/
+                                ContentValues values = new ContentValues();
+                                //发送时间
+                                values.put("date", System.currentTimeMillis());
+                                //阅读状态
+                                values.put("read", 0);
+                                //1为收 2为发
+                                values.put("type", 2);
+                                //送达号码
+                                values.put("address", targetPhoneNumber);
+                                //送达内容
+                                values.put("body", targetContent);
+                                //插入短信库
+                                getContentResolver().insert(Uri.parse("content://sms"),values);
+                                Log.v(TAG, "send message");
+                            }
+                        };
+                        timer.schedule(task, delay_time * 1000);
                     }
             }
         }

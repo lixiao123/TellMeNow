@@ -9,6 +9,7 @@
     <string name="st_function">监听功能</string>
     <string name="ep_targetNumber">发送的号码</string>
     <string name="lp_delay">延迟的时间</string>
+    <string name="dialog_delay">请选择要延迟的时间</string>
     <string name="cb_insert_system_db">写入系统短信</string>
     <string name="about">About</string>
 
