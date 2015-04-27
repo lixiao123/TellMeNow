@@ -140,22 +140,23 @@ public class PhoneListenerService extends Service {
                                 } else {
                                     smsManager.sendTextMessage(targetPhoneNumber, null, targetContent, null, null);
                                 }
-
-                                /**将发送的短信插入数据库**/
-                                ContentValues values = new ContentValues();
-                                //发送时间
-                                values.put("date", System.currentTimeMillis());
-                                //阅读状态
-                                values.put("read", 0);
-                                //1为收 2为发
-                                values.put("type", 2);
-                                //送达号码
-                                values.put("address", targetPhoneNumber);
-                                //送达内容
-                                values.put("body", targetContent);
-                                //插入短信库
-                                getContentResolver().insert(Uri.parse("content://sms"),values);
-                                Log.v(TAG, "send message");
+                                if (sp.getBoolean(SettingsActivity.INSERT_SYSTEM_DB_KEY, true)) {
+                                    /**将发送的短信插入数据库**/
+                                    ContentValues values = new ContentValues();
+                                    //发送时间
+                                    values.put("date", System.currentTimeMillis());
+                                    //阅读状态
+                                    values.put("read", 0);
+                                    //1为收 2为发
+                                    values.put("type", 2);
+                                    //送达号码
+                                    values.put("address", targetPhoneNumber);
+                                    //送达内容
+                                    values.put("body", targetContent);
+                                    //插入短信库
+                                    getContentResolver().insert(Uri.parse("content://sms"), values);
+                                    Log.v(TAG, "send message");
+                                }
                             }
                         };
                         timer.schedule(task, delay_time * 1000);
